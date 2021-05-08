@@ -1,15 +1,47 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <app-header @add-task="addUncompleted"></app-header>
+  <div class="container content">
+    <!-- Uncompleted tasks -->
+    <todo-list :tasks="tasks"
+               @removeTask="removeTodo"
+               @compData="upCompleted"
+    ></todo-list>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AppHeader from "./components/AppHeader";
+import TodoList from "@/components/TodoList";
 
 export default {
+  data() {
+    return {
+      tasks: [],
+    }
+  },
   name: 'App',
-  components: {
-    HelloWorld
+  components: { AppHeader, TodoList },
+  methods: {
+    addUncompleted(value) {
+      this.tasks.push(value)
+    },
+    removeTodo(id) {
+      this.tasks = this.tasks.filter(item => item.id != id)
+    },
+    upCompleted(id) {
+      this.tasks.forEach(item => {
+        if (item.id === id) {
+          if (!item.completed) {
+            item.completed = 1
+          } else {
+            item.completed = 0
+          }
+        }
+      })
+
+      this.tasks.sort(function(a,b){return b.completed-a.completed})
+      console.log(this.tasks)
+    },
   }
 }
 </script>
